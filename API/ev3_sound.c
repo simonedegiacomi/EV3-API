@@ -357,6 +357,9 @@ void _playSoundSamplesFromStream(int fileHandle)
 			// Valid file
 			BytesRead = read(fileHandle, &(SoundInstance.SoundData[1]), BytesToRead);
 			SoundInstance.BytesToWrite = BytesRead + 1;
+			if (BytesRead == 0) {
+				break;
+			}
 		}
 
 		BytesWritten = 0;
@@ -468,7 +471,6 @@ void _playWAVFile(char* pFileName, uint8_t volume, bool loop)
 			return;
 
 		int sampleRate = _readInt(SoundInstance.hSoundFile, true);
-		(void)sampleRate;
 
 		_readInt(SoundInstance.hSoundFile, true);
 		_readShort(SoundInstance.hSoundFile, true);
@@ -666,7 +668,7 @@ void PlayTonesEx(Tone tones[], size_t size)
 	if (SoundInstance.SoundMuted != 0)
 		return;
 
-	for (i = 0; i < size; i++) {
+	for (i = 0; i <  size; i++) {
 		Tone tmp = tones[i];
 		PlayTone(tmp.Frequency, tmp.Duration);
 		Wait(tmp.Duration);
@@ -711,4 +713,3 @@ void ClearSound()
 	// a synonym for StopSound;
 	StopSound();
 }
-
