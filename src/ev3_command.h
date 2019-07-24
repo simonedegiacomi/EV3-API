@@ -42,6 +42,10 @@ extern "C" {
 
 void Wait(unsigned long ms);
 
+unsigned long long TimerGetUS();
+
+unsigned long long TimerGetMS();
+
 #endif // ev3_command_h
 
 #ifdef __cplusplus
