@@ -33,18 +33,7 @@ extern "C" {
 #ifndef ev3_command_h
 #define ev3_command_h
 
-#include <unistd.h>
-#include <sys/time.h>
-#include <signal.h>
-#include <string.h>
-
-#include "ev3_constants.h"
-
 void Wait(unsigned long ms);
-
-unsigned long long TimerGetUS();
-
-unsigned long long TimerGetMS();
 
 #endif // ev3_command_h
 
