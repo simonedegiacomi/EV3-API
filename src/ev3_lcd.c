@@ -383,7 +383,7 @@ bool LcdInit()
 			TimerInit(25);
 
 			// register update handler with timer system
-			SetTimerCallback(ti250ms, &LcdUpdateHandler);
+            AddTimerCallback(ti250ms, &LcdUpdateHandler);
 #endif
 
 			return true;
