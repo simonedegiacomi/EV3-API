@@ -26,21 +26,32 @@ before_install:
 #
 
 script:
+  # build documentation
   - doxygen Doxyfile
+  # build using glibx
   - make PREFIX=arm-none-linux-gnueabi- CFLAGS="-Wall -Wextra -Wno-unused-parameter -Wno-pointer-sign -fdata-sections -ffunction-sections"
-  - mkdir doxy_out/html/glibc && mv libev3api.a doxy_out/html/glibc
+  - mkdir -p release/lib/glibc && mv libev3api.a release/lib/glibc/libev3api.a
   # build also using uclibc
   - make clean
   - make PREFIX=arm-c4ev3-linux-uclibceabi- CFLAGS="-Wall -Wextra -Wno-unused-parameter -Wno-pointer-sign -fdata-sections -ffunction-sections"
-  - mkdir doxy_out/html/uclibc && mv libev3api.a doxy_out/html/uclibc
+  - mkdir release/lib/uclibc && mv libev3api.a release/lib/uclibc/libev3api.a
+  # prepare release zip
+  - cp -r include release
+  - mv release c4ev3-$TRAVIS_TAG && zip -r c4ev3.zip c4ev3-$TRAVIS_TAG
 
 deploy:
-  provider: pages
-  skip_cleanup: true
-  local_dir: doxy_out/html
-  github_token: $GH_REPO_TOKEN
-  on:
-    branch: master
+  - provider: pages
+    skip_cleanup: true
+    local_dir: doxy_out/html
+    github_token: $GH_REPO_TOKEN
+    on:
+      branch: master
+  - provider: releases
+    api_key: $GH_REPO_TOKEN
+    file: "c4ev3.zip"
+    skip_cleanup: true
+    on:
+      tags: true
 
 #after_script:
 #  - make PREFIX=arm-none-linux-gnueabi- CFLAGS="-Os -Wl,--gc-sections" example
