@@ -64,6 +64,10 @@ int FreeEV3();
 
 bool EV3IsInitialized();
 
+/**
+ * @return statically allocated string that contains the version of this library
+ */
+char* EV3GetC4ev3Version();
 
 
 /* Students are lazy, so lets have the intialization happen automatically for them.

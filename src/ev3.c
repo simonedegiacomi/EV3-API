@@ -57,3 +57,7 @@ bool EV3IsInitialized(void)
 {
 	return initialized;
 }
+
+char* EV3GetC4ev3Version() {
+    return "0.1.0";
+}
