@@ -25,11 +25,11 @@ You can download the one from the [official c4ev3 repository](https://github.com
 
 ## Using the library
 
-Download the static library form one of the two links, according to the toolchain you are using:
-- [libev3api.a uclibc](https://simonedegiacomi.github.io/EV3-API/uclibc/libev3api.a)
-- [libev3api.a glibc](https://simonedegiacomi.github.io/EV3-API/glibc/libev3api.a)
+Download library from the [releases page](https://github.com/simonedegiacomi/EV3-API/releases). Each releases consist of a
+zip file that contains an `include` folder, with all the headers, and a `lib` folder, which contains the built static library.
+There are two versions of static library: glibc and uclibc. While compiling, specify the right version to use according to your compiler.
 
-> If you are using the toolchain from c4ev3, download the uclibc version.
+> If you are using the toolchain from c4ev3, use the uclibc version.
 
 Create now a new file:
 ```c
@@ -50,7 +50,11 @@ int main () {
 
 Then compile it with:
 ```bash
-arm-c4ev3-linux-uclibcgnueabi-gcc hello.c -I /path/to/c4ev3/include -L /path/to/static/library -lev3api
+arm-c4ev3-linux-uclibcgnueabi-gcc hello.c -I /path/to/c4ev3/include -L /path/to/c4ev3/include/lib/uclibc -lev3api
+```
+or with (if you're using a glibc compiler)
+```bash
+arm-linux-gnueabi-gcc hello.c -I /path/to/c4ev3/include -L /path/to/c4ev3/include/lib/glibc -lev3api
 ```
 
 Finally, use [ev3duder](https://github.com/c4ev3/ev3duder) to upload the program to the robot.
