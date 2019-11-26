@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['c',['C',['../nxt__temperature_8h.html#a04cbc137aeda6bf21aa767fe42a2ad5fa739ce3f516592d245d16fd8a3893472c',1,'nxt_temperature.h']]],
+  ['circleoutex',['CircleOutEx',['../ev3__lcd_8h.html#a49401f1d70163b0c749b6151327094d9',1,'ev3_lcd.h']]],
+  ['clearsound',['ClearSound',['../ev3__sound_8h.html#ab3dd27ea7824db8b7446f0f42816caae',1,'ev3_sound.h']]],
+  ['cleartimerms',['ClearTimerMS',['../ev3__timer_8h.html#a9d898ea4c28fd4591decd621659b1030',1,'ev3_timer.h']]],
+  ['cleartimerus',['ClearTimerUS',['../ev3__timer_8h.html#ad05fed6e317050d8a1019394f9448ac2',1,'ev3_timer.h']]],
+  ['cm',['CM',['../ev3__ultrasonic_8h.html#ad80a0a9be7f561741160b32bb8b09f64ae256357c69514a4c50b9a9c857dbe7f4',1,'ev3_ultrasonic.h']]],
+  ['col_5fambient',['COL_AMBIENT',['../back__compatibility_8h.html#afb188de884c3048fca8784b5f04403b6',1,'back_compatibility.h']]],
+  ['col_5fcolor',['COL_COLOR',['../back__compatibility_8h.html#a14981f5f7d66e170a40e3ba3f611892c',1,'back_compatibility.h']]],
+  ['col_5freflect',['COL_REFLECT',['../back__compatibility_8h.html#a2b9880908818652bbb291babfc3f8061',1,'back_compatibility.h']]],
+  ['color',['Color',['../ev3__color_8h.html#ab87bacfdad76e61b9412d7124be44c1c',1,'Color():&#160;ev3_color.h'],['../ev3__color_8h.html#ae3ab404af5a069b4622c89ec92430645',1,'Color():&#160;ev3_color.h']]],
+  ['commandmoduleconstants',['CommandModuleConstants',['../group__CommandModuleConstants.html',1,'']]],
+  ['connectto',['ConnectTo',['../ev3__bluetooth_8h.html#a6a2f3f1241845c654f326c07f6c92179',1,'ev3_bluetooth.h']]],
+  ['cs_5ftimer_5f1',['CS_TIMER_1',['../group__TimerModuleConstants.html#ga9a8fc463e1bc1dd4ecabddd9b5cf1354',1,'ev3_constants.h']]],
+  ['cs_5ftimer_5f2',['CS_TIMER_2',['../group__TimerModuleConstants.html#ga7222bc7d00d6352217faba26eb354214',1,'ev3_constants.h']]],
+  ['cs_5ftimer_5f3',['CS_TIMER_3',['../group__TimerModuleConstants.html#ga2d262108035e66aefd1e9796389eaa3e',1,'ev3_constants.h']]],
+  ['cs_5ftimer_5f4',['CS_TIMER_4',['../group__TimerModuleConstants.html#gad59de2ae88eff576529a6248f367840c',1,'ev3_constants.h']]],
+  ['currentsensormode',['currentSensorMode',['../structSensorHandler.html#a19f7be87817bc73af6dddf9fc96cc51b',1,'SensorHandler']]]
+];
