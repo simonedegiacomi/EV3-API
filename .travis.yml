@@ -1,14 +1,15 @@
 language: c
-dist: trusty
+dist: bionic
 os: linux
-sudo: fals
+sudo: false
 
 addons:
   apt:
     packages:
+      - cmake
       - doxygen
+      - graphviz
       - libc6-i386
-
 
 before_install:
   - wget -c http://www.codesourcery.com/sgpp/lite/arm/portal/package4571/public/arm-none-linux-gnueabi/arm-2009q1-203-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
@@ -28,13 +29,21 @@ before_install:
 script:
   # build documentation
   - doxygen Doxyfile
-  # build using glibx
-  - make PREFIX=arm-none-linux-gnueabi- CFLAGS="-Wall -Wextra -Wno-unused-parameter -Wno-pointer-sign -fdata-sections -ffunction-sections"
-  - mkdir -p release/lib/glibc && mv libev3api.a release/lib/glibc/libev3api.a
-  # build also using uclibc
-  - make clean
-  - make PREFIX=arm-c4ev3-linux-uclibceabi- CFLAGS="-Wall -Wextra -Wno-unused-parameter -Wno-pointer-sign -fdata-sections -ffunction-sections"
-  - mkdir release/lib/uclibc && mv libev3api.a release/lib/uclibc/libev3api.a
+  # build using glibc
+  - mkdir -p build/glibc
+  - cd build/glibc
+  - cmake ../.. -DCMAKE_TOOLCHAIN_FILE=../../CMake/codesourcery.cmake -DCMAKE_BUILD_TYPE=MinSizeRel
+  - make all example.elf examples
+  - cd ../..
+  # build using uclibc
+  - mkdir -p build/uclibc
+  - cd build/uclibc
+  - cmake ../.. -DCMAKE_TOOLCHAIN_FILE=../../CMake/c4ev3.cmake -DCMAKE_BUILD_TYPE=MinSizeRel
+  - make all example.elf examples
+  - cd ../..
+  # prepare release
+  - mkdir -p release/lib/glibc  && mv build/glibc/libev3api.a  release/lib/glibc/libev3api.a
+  - mkdir -p release/lib/uclibc && mv build/uclibc/libev3api.a release/lib/uclibc/libev3api.a
   # prepare release zip
   - cp -r include release
   - mv release c4ev3-$TRAVIS_TAG && zip -r c4ev3.zip c4ev3-$TRAVIS_TAG
@@ -53,10 +62,13 @@ deploy:
     on:
       tags: true
 
-#after_script:
-#  - make PREFIX=arm-none-linux-gnueabi- CFLAGS="-Os -Wl,--gc-sections" example
-#  - nm -g libev3api.a | tee symbols.after
-#  - grep InitEV3 symbols.after || (echo "libev3api.a doesn't contain symbols! Aborting..." && false)
-#  - nm -g a.out
-#  - nm -g a.out | grep InitEV3 || (echo "The InitEV3 constructor has not been included!! Aborting..." && false)
-#
+after_script:
+  - nm -g build/glibc/libev3api.a | tee symbols.after
+  - grep InitEV3 symbols.after || (echo "libev3api.a from glibc toolchain doesn't contain symbols! Aborting..." && false)
+  - nm -g build/glibc/example.elf
+  - nm -g build/glibc/example.elf | grep InitEV3 || (echo "The InitEV3 constructor has not been included!! Aborting..." && false)
+
+  - nm -g build/uclibc/libev3api.a | tee symbols.after
+  - grep InitEV3 symbols.after || (echo "libev3api.a from uclibc toolchain doesn't contain symbols! Aborting..." && false)
+  - nm -g build/uclibc/example.elf
+  - nm -g build/uclibc/example.elf | grep InitEV3 || (echo "The InitEV3 constructor has not been included!! Aborting..." && false)
