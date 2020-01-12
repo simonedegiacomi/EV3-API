@@ -54,3 +54,20 @@ target_include_directories(ev3api
 if (DISABLE_TIMERS)
     target_compile_definitions(c4ev3::ev3api PUBLIC -DDISABLE_TIMERS=1)
 endif()
+
+########################################################################
+# EXAMPLE TEST FILE
+
+# also add a minimal test file
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/example.c "#include <ev3.h>\r\nint main(void) { return EV3IsInitialized() == 1; }\r\n")
+
+add_executable(example.elf EXCLUDE_FROM_ALL ${CMAKE_CURRENT_BINARY_DIR}/example.c)
+target_link_libraries(example.elf PRIVATE c4ev3::ev3api)
+
+########################################################################
+# REAL EXAMPLES
+
+option(ENABLE_EXAMPLES "Enable examples" ON)
+if (ENABLE_EXAMPLES)
+    add_subdirectory(examples EXCLUDE_FROM_ALL)
+endif()
