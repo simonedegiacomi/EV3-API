@@ -7,13 +7,14 @@ SRCS = $(wildcard src/*.c) $(wildcard src/**/*.c) $(wildcard firmware_headers/**
 OBJS = $(patsubst %.c,%.o,$(SRCS))
 CFLAGS += -fno-strict-aliasing -fwrapv
 CFLAGS += -Wall -Wextra -Wpointer-sign -Wno-unused-parameter
+VERSION = $(shell cat VERSION)
 
 .DEFAULT: libev3api.a
 libev3api.a: $(OBJS)
 	$(AR) rcs $@ $^
 
 %.o: %.c
-	$(CC) -Os $(CFLAGS) -c $< -o $@ 
+	$(CC) -Os $(CFLAGS) -DC4EV3_VERSION=$(VERSION) -c $< -o $@
 
 example:
 	echo 'int main(void) { return EV3IsInitialized() == 1; }' | $(CC) -xc $(CFLAGS) - -L. -lev3api -I. -oexample -include ev3.h

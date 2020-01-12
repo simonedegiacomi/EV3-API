@@ -58,6 +58,9 @@ bool EV3IsInitialized(void)
 	return initialized;
 }
 
+#define STRINGIZE(x) #x
+#define STRINGIZE_VALUE_OF(x) STRINGIZE(x)
+
 char* EV3GetC4ev3Version() {
-    return "0.1.0";
+    return STRINGIZE_VALUE_OF(C4EV3_VERSION);
 }
