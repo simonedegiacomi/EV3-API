@@ -71,3 +71,28 @@ option(ENABLE_EXAMPLES "Enable examples" ON)
 if (ENABLE_EXAMPLES)
     add_subdirectory(examples EXCLUDE_FROM_ALL)
 endif()
+
+########################################################################
+# DOCUMENTATION
+
+option(ENABLE_DOCS "Enable documentation" ON)
+if (ENABLE_DOCS)
+    find_package(Doxygen COMPONENTS dot)
+    if (DOXYGEN_FOUND)
+        set(DOXYGEN_INPUT "${CMAKE_CURRENT_SOURCE_DIR}/include")
+        set(DOXYGEN_OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/docs")
+        set(DOXYFILE_TEMPLATE "${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in")
+        set(DOXYFILE          "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile")
+
+        configure_file("${DOXYFILE_TEMPLATE}" "${DOXYFILE}")
+
+        add_custom_target(docs VERBATIM
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${DOXYGEN_OUTPUT}"
+            COMMAND Doxygen::doxygen "${DOXYFILE}"
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            DEPENDS "${DOXYFILE}"
+            COMMENT "Generating Doxygen documentation"
+            ${EV3API_HEADERS}
+        )
+    endif()
+endif()
