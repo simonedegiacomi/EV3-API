@@ -118,10 +118,10 @@ typedef struct
 	const char  FontLast;             // Last character supported
 } FONTINFO;
 
-#include "normal_font.xbm"
-#include "small_font.xbm"
-#include "large_font.xbm"
-#include "tiny_font.xbm"
+#include "fonts/normal_font.xbm"
+#include "fonts/small_font.xbm"
+#include "fonts/large_font.xbm"
+#include "fonts/tiny_font.xbm"
 
 
 FONTINFO FontInfo[] =
@@ -179,11 +179,11 @@ typedef   struct
 	const short IconWidth;
 } ICONINFO;
 
-#include "normal_icons.xbm"
-#include "small_icons.xbm"
-#include "large_icons.xbm"
-#include "menu_icons.xbm"
-#include "arrow_icons.xbm"
+#include "icons/normal_icons.xbm"
+#include "icons/small_icons.xbm"
+#include "icons/large_icons.xbm"
+#include "icons/menu_icons.xbm"
+#include "icons/arrow_icons.xbm"
 
 
 ICONINFO IconInfo[] =
