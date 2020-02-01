@@ -3,7 +3,7 @@ CROSS_COMPILE ?= C:/CSLite/bin/arm-none-linux-gnueabi-
 PREFIX ?= $(CROSS_COMPILE)
 CC = $(PREFIX)gcc
 AR = $(PREFIX)ar
-SRCS = $(wildcard src/*.c) 
+SRCS = $(wildcard src/*.c firmware_headers/**/*.c) 
 OBJS = $(patsubst %.c,%.o,$(SRCS))
 CFLAGS += -fno-strict-aliasing -fwrapv
 CFLAGS += -Wall -Wextra -Wpointer-sign -Wno-unused-parameter
@@ -24,4 +24,4 @@ example:
 
 .PHONY: clean
 clean:
-	$(RM) src/*.o *.a *.d example
+	$(RM) src/*.o firmware_headers/**/*.o *.a *.d example
