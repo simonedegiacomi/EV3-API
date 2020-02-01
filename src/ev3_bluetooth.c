@@ -56,14 +56,15 @@ void removeConnectionFromList (BluetoothConnectionHandle c) {
 }
 
 
-bool isBluetoothAddress(char * nameOrAddress);
-bool findAddressByBluetoothName(char * name, char * address);
-BluetoothConnectionHandle connectByBluetoothAddress(char * address);
+bool isBluetoothAddress(const char * nameOrAddress);
+bool findAddressByBluetoothName(const char * name, char * address);
+BluetoothConnectionHandle connectByBluetoothAddress(const char * address);
 
-BluetoothConnectionHandle ConnectTo(char * nameOrAddress) {
+BluetoothConnectionHandle ConnectTo(const char * nameOrAddress) {
 	char address[BLUETOOTH_ADDRESS_LENGTH];
 	if (isBluetoothAddress(nameOrAddress)) {
 		strncpy(address, nameOrAddress, BLUETOOTH_ADDRESS_LENGTH);
+		address[BLUETOOTH_ADDRESS_LENGTH - 1] = '/0';
 	} else {
 		bool found = findAddressByBluetoothName(nameOrAddress, address);
 		if (!found) {
@@ -75,15 +76,15 @@ BluetoothConnectionHandle ConnectTo(char * nameOrAddress) {
 	return c;
 }
 
-bool isBluetoothAddress(char * nameOrAddress) {
+bool isBluetoothAddress(const char * nameOrAddress) {
     return bachk(nameOrAddress) == 0;
 }
 
-FILE * openKnownBluetoothNamesFile();
+FILE * openKnownBluetoothNamesFile(void);
 void getLocalBluetoothAddress (char * address);
-void getKnownBluetoothNamesFile (char * localBluetoothAddress, char * fileName);
-void getAddressFromKnownBluetoothNamesFileRow(char *addressAndName, char * address);
-void getNameFromKnownBluetoothNamesFileRow(char *addressAndName, char * name);
+void getKnownBluetoothNamesFile (const char * localBluetoothAddress, char * fileName);
+bool getAddressFromKnownBluetoothNamesFileRow(const char *addressAndName, char * address);
+void getNameFromKnownBluetoothNamesFileRow(const char *addressAndName, char * name);
 
 /**
  * To find the address of a device, given its name, we read a file that the
@@ -95,7 +96,7 @@ void getNameFromKnownBluetoothNamesFileRow(char *addressAndName, char * name);
  * @param foundAddress
  * @return
  */
-bool findAddressByBluetoothName(char * nameToFind, char * foundAddress) {
+bool findAddressByBluetoothName(const char * nameToFind, char * foundAddress) {
     FILE * namesFile = openKnownBluetoothNamesFile();
     if (namesFile == NULL) {
         perror("open known bluetooth names file");
@@ -105,7 +106,9 @@ bool findAddressByBluetoothName(char * nameToFind, char * foundAddress) {
     bool found = false;
     while (!found && fgets(addressAndName, KNOWN_BLUETOOTH_NAMES_FILE_ROW_LENGTH, namesFile)) {
         char address[BLUETOOTH_ADDRESS_LENGTH];
-        getAddressFromKnownBluetoothNamesFileRow(addressAndName, address);
+        if(!getAddressFromKnownBluetoothNamesFileRow(addressAndName, address)) {
+            continue;
+        }
 
         char name[MAX_BLUETOOTH_NAME_LENGTH];
         getNameFromKnownBluetoothNamesFileRow(addressAndName, name);
@@ -155,15 +158,16 @@ void getLocalBluetoothAddress (char * address) {
     address[17] = 0;
 }
 
-void getKnownBluetoothNamesFile (char * localBluetoothAddress, char * fileName) {
+void getKnownBluetoothNamesFile (const char * localBluetoothAddress, char * fileName) {
     strcpy(fileName, "/mnt/ramdisk/bluetooth/");
     strcat(fileName, localBluetoothAddress);
     strcat(fileName, "/names");
 }
 
-void getAddressFromKnownBluetoothNamesFileRow(char *addressAndName, char * address) {
+bool getAddressFromKnownBluetoothNamesFileRow(const char *addressAndName, char * address) {
     strncpy(address, addressAndName, BLUETOOTH_ADDRESS_LENGTH - 1);
     address[BLUETOOTH_ADDRESS_LENGTH - 1] = 0;
+    return isBluetoothAddress(address);
 }
 
 void getNameFromKnownBluetoothNamesFileRow(const char *addressAndName, char * name) {
@@ -173,12 +177,11 @@ void getNameFromKnownBluetoothNamesFileRow(const char *addressAndName, char * na
 
 bool waitAsyncConnection (int socket);
 
-BluetoothConnectionHandle connectByBluetoothAddress(char * address) {
+BluetoothConnectionHandle connectByBluetoothAddress(const char * address) {
     struct sockaddr_rc remoteAddress;
     remoteAddress.rc_family = AF_BLUETOOTH;
     remoteAddress.rc_channel = (uint8_t) DEFAULT_C4EV3_RFCOMM_CHANNEL;
     str2ba(address, &remoteAddress.rc_bdaddr);
-    printf("connecting...\n");
     while (true) {
         int socketToServer = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
         int connectResult = connect(socketToServer, (struct sockaddr *) &remoteAddress, sizeof(remoteAddress));
@@ -219,7 +222,6 @@ bool waitAsyncConnection (int socket) {
         socklen_t optLength = sizeof(optval);
         int getSockOptResult = getsockopt(socket, SOL_SOCKET, SO_ERROR, &optval, &optLength);
         if (getSockOptResult == 0 && optval == 0) {
-            printf("connected\n");
             return true;
         }
     }
@@ -228,12 +230,14 @@ bool waitAsyncConnection (int socket) {
 }
 
 bool isServerStarted();
-void startServer ();
+int startServer ();
 BluetoothConnectionHandle acceptIncomingConnection ();
 
 BluetoothConnectionHandle WaitConnection() {
 	if(!isServerStarted()) {
-		startServer();
+	    if(startServer() != 0) {
+	        return -1;
+	    }
 	}
 	return acceptIncomingConnection();
 }
@@ -245,39 +249,39 @@ bool isServerStarted(){
 	return serverSocket > 0;
 }
 
-void bindServerSocketToFirstAvailableChannel ();
+int bindServerSocket ();
 
-void startServer () {
+int startServer () {
     serverSocket = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-    // TODO: Handle error
-	bindServerSocketToFirstAvailableChannel();
-    int res = listen(serverSocket, 1); // TODO: do we keep 1 as backlog?
-    // TODO: Handle error
+    if (serverSocket == -1) {
+        return -1;
+    }
+	if(bindServerSocket() != 0) {
+	    return -1;
+	}
+    return listen(serverSocket, 1); // TODO: do we keep 1 as backlog?
 }
 
-void bindServerSocketToFirstAvailableChannel () {
-    struct sockaddr_rc listenAddress = { 0 };
+int bindServerSocket () {
+    struct sockaddr_rc listenAddress;
     listenAddress.rc_family = AF_BLUETOOTH;
     listenAddress.rc_bdaddr = *BDADDR_ANY;
     listenAddress.rc_channel = DEFAULT_C4EV3_RFCOMM_CHANNEL;
-    bind(serverSocket, (struct sockaddr *) &listenAddress, sizeof(listenAddress));
-    printf("> Listening on channel: %d\n", listenAddress.rc_channel);
+    return bind(serverSocket, (struct sockaddr *) &listenAddress, sizeof(listenAddress));
 }
 
 BluetoothConnectionHandle acceptIncomingConnection () {
 	struct sockaddr_rc remoteAddress = { 0 };
 	socklen_t addressLength = sizeof(remoteAddress);
     BluetoothConnectionHandle c;
-    printf("Waiting new connection\n");
     do {
     	c = accept(serverSocket, (struct sockaddr *) &remoteAddress, &addressLength);
-    } while (c == -1);
-    printf("Received new connection\n");
+    } while (c == -1 && errno == EINTR);
     return c;
 }
 
 
-void SendStringTo(BluetoothConnectionHandle to, char * str) {
+void SendStringTo(BluetoothConnectionHandle to, const char * str) {
 	write(to, str, strlen(str));
 }
 
