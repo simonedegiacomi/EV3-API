@@ -45,6 +45,13 @@
 
 /***********************************/
 // define of Sensor setup
+/**
+ * The EV3 firmware uses a built-in device type list in order to know how to read
+ * data from the various external devices.
+ * The list of types can be found in the EV3 firmware source code or in the "EV3
+ * Firmware Development Kit" document (downloadable from the Lego website).
+ */
+
 // TOUCH
 #define TOUCH_TYPE 16
 #define TOUCH_PRESS_MODE 0 	// Press
@@ -80,6 +87,11 @@
 #define NXT_TEMP_TYPE 6
 #define NXT_TEMP_C_MODE 0	// Temperature in C
 #define NXT_TEMP_F_MODE 1	// Temperature in F
+
+// NXT Sound
+#define NXT_SOUND_TYPE 3
+#define NXT_SOUND_DB_MODE 0
+#define NXT_SOUND_DBA_MODE 1
 
 /***********************************/
 
@@ -274,6 +286,9 @@ void* ReadSensorData(int sensorPort)
 			return readIicSensor(sensorPort);
 		case NXT_TEMP_F:
 			return readIicSensor(sensorPort);
+		case NXT_SOUND_DB:
+		case NXT_SOUND_DBA:
+			return readOldDumbSensor(sensorPort);
 		default: return 0;
 	}
 
@@ -372,6 +387,10 @@ int ReadSensor(int sensorPort)
 				return (-1)*(((help>>4) & 0xFF)*10 + ((help & 0xF) * 10 / 15)) * 9/5 + 320;
 			}
 			return (((help>>4) & 0xFF)*10 + ((help & 0xF) * 10 / 15)) * 9/5 + 320;
+		case NXT_SOUND_DB:
+		case NXT_SOUND_DBA:
+			help = *((DATA16*)data);
+			return (int)((1.0 - (help/4095.0)) * 100.0); // ADC_RES = 4095
 		default: break;
 	}
 	return *((DATA16*)data);
@@ -502,6 +521,16 @@ int SetAllSensorMode(int name_1, int name_2, int name_3, int name_4)
 				devCon.Connection[sensorPort] 	= CONN_NXT_IIC;
 				devCon.Type[sensorPort] 		= NXT_TEMP_TYPE;
 				devCon.Mode[sensorPort] 		= NXT_TEMP_F_MODE;
+				break;
+			case NXT_SOUND_DB:
+				devCon.Connection[sensorPort] 	= CONN_NXT_DUMB;
+				devCon.Type[sensorPort] 		= NXT_SOUND_TYPE;
+				devCon.Mode[sensorPort] 		= NXT_SOUND_DB_MODE;
+				break;
+			case NXT_SOUND_DBA:
+				devCon.Connection[sensorPort] 	= CONN_NXT_DUMB;
+				devCon.Type[sensorPort] 		= NXT_SOUND_TYPE;
+				devCon.Mode[sensorPort] 		= NXT_SOUND_DBA_MODE;
 				break;
 			default: return -1;
 		}
