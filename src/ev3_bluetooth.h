@@ -13,11 +13,16 @@ void BluetoothInit();
 typedef int BluetoothConnectionHandle;
 
 /**
- * Connect to the remote device given his bluetooth name or address
+ * Connect to the remote device given his bluetooth name or address.
+ * If the connection can't be established, a new attempt will be tried after 1
+ * second.
  * @param nameOrAddress
+ * @param attempts maximum number of attempts. This argument should be >= 1,
+ *        otherwise no attempt will be tried (and the connection will never be
+ *        established)
  * @return Connection handle or -1 if wasn't possible to find the address given the device name
  */
-BluetoothConnectionHandle ConnectTo(const char * nameOrAddress);
+BluetoothConnectionHandle ConnectTo(const char * nameOrAddress, int attempts);
 
 /**
  * Wait for an incoming bluetooth connection from another device

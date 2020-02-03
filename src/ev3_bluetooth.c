@@ -21,8 +21,8 @@
  * Channel 1 is already taken by the UI process of the robot, so we use 2.
  */
 #define DEFAULT_C4EV3_RFCOMM_CHANNEL    2
-#define MAX_CONNECTIONS				    7
-#define SHORT_BLUETOOTH_ADDRESS_LENGTH  13 // 000000000000 + null terminator
+#define MAX_CONNECTIONS                 7
+#define SHORT_BLUETOOTH_ADDRESS_LENGTH  sizeof("000000000000")
 
 #define KNOWN_BLUETOOTH_NAMES_FILE_NAME_LENGTH 256
 #define KNOWN_BLUETOOTH_NAMES_FILE_ROW_LENGTH  256
@@ -58,9 +58,17 @@ void removeConnectionFromList (BluetoothConnectionHandle c) {
 
 bool isBluetoothAddress(const char * nameOrAddress);
 bool findAddressByBluetoothName(const char * name, char * address);
-BluetoothConnectionHandle connectByBluetoothAddress(const char * address);
 
-BluetoothConnectionHandle ConnectTo(const char * nameOrAddress) {
+/**
+ * Connects to the specified bluetooth address. If the connection fails, a new
+ * attempt is tried after one second.
+ * @param address
+ * @param attempts number of attempts to retry connection
+ * @return connection handle or -1 if the connection couldn't be established
+ */
+BluetoothConnectionHandle connectByBluetoothAddress(const char * address, int attempts);
+
+BluetoothConnectionHandle ConnectTo(const char * nameOrAddress, int attempts) {
 	char address[BLUETOOTH_ADDRESS_LENGTH];
 	if (isBluetoothAddress(nameOrAddress)) {
 		strncpy(address, nameOrAddress, BLUETOOTH_ADDRESS_LENGTH);
@@ -71,7 +79,7 @@ BluetoothConnectionHandle ConnectTo(const char * nameOrAddress) {
 			return -1;
 		}
 	}
-	BluetoothConnectionHandle c = connectByBluetoothAddress(address);
+	BluetoothConnectionHandle c = connectByBluetoothAddress(address, attempts);
 	addConnectionToList(c);
 	return c;
 }
@@ -177,13 +185,16 @@ void getNameFromKnownBluetoothNamesFileRow(const char *addressAndName, char * na
 
 bool waitAsyncConnection (int socket);
 
-BluetoothConnectionHandle connectByBluetoothAddress(const char * address) {
+BluetoothConnectionHandle connectByBluetoothAddress(const char * address, int attempts) {
     struct sockaddr_rc remoteAddress;
     remoteAddress.rc_family = AF_BLUETOOTH;
     remoteAddress.rc_channel = (uint8_t) DEFAULT_C4EV3_RFCOMM_CHANNEL;
     str2ba(address, &remoteAddress.rc_bdaddr);
-    while (true) {
+    while (attempts > 0) {
         int socketToServer = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+        if (socketToServer != -1) {
+            continue;
+        }
         int connectResult = connect(socketToServer, (struct sockaddr *) &remoteAddress, sizeof(remoteAddress));
 
         /**
@@ -205,7 +216,9 @@ BluetoothConnectionHandle connectByBluetoothAddress(const char * address) {
         // try to connect again later
         close(socketToServer);
         sleep(1);
+        attempts--;
     }
+    return -1;
 }
 
 bool waitAsyncConnection (int socket) {
