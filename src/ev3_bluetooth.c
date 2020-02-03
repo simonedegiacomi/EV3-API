@@ -281,8 +281,8 @@ BluetoothConnectionHandle acceptIncomingConnection () {
 }
 
 
-void SendStringTo(BluetoothConnectionHandle to, const char * str) {
-	write(to, str, strlen(str));
+int SendStringTo(BluetoothConnectionHandle to, const char * str) {
+	return write(to, str, strlen(str));
 }
 
 int ReceiveStringFrom(BluetoothConnectionHandle from, char * buffer, int bufferLength) {

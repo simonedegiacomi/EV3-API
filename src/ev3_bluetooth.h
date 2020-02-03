@@ -20,13 +20,30 @@ typedef int BluetoothConnectionHandle;
 BluetoothConnectionHandle ConnectTo(const char * nameOrAddress);
 
 /**
- * Wait for an incoming blueooth connection from another device
+ * Wait for an incoming bluetooth connection from another device
  * @return Connection handle or -1 if there was an error while waiting for the connection
  */
 BluetoothConnectionHandle WaitConnection();
 
-void SendStringTo(BluetoothConnectionHandle to, const char * str);
+/**
+ * Sends a string to the remote device.
+ * The string is sent without the null terminator, since ReceiveStringFrom will
+ * add it once it's received.
+ * @param to handle of the connection to use to send the string
+ * @param str null-terminated string to send
+ * @return number of bytes sent or -1 if there was an error. It may happen that
+ *         the number of sent bytes is smaller than the length of the string.
+ */
+int SendStringTo(BluetoothConnectionHandle to, const char * str);
 
+/**
+ * Receives a string from a connection, copying it into the buffer. The buffer
+ * will be null-terminated.
+ * @param from connection to use to receive the string
+ * @param buffer buffer where to write the null-terminated received string
+ * @param bufferLength length of the buffer (max length of the string)
+ * @return number of bytes received or -1 if there was an error
+ */
 int ReceiveStringFrom(BluetoothConnectionHandle from, char * buffer, int bufferLength);
 
 void DisconnectFrom(BluetoothConnectionHandle from);
