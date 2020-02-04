@@ -302,7 +302,7 @@ int ReceiveStringFrom(BluetoothConnectionHandle from, char * buffer, int bufferL
 	int readBytes;
 	do {
 		readBytes = read(from, buffer, bufferLength - 1);
-	} while (readBytes == -1);
+	} while (readBytes == -1 && errno == EINTR);
 	buffer[readBytes] = 0;
 	return readBytes;
 }
