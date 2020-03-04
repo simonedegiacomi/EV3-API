@@ -1,5 +1,5 @@
 #include "ev3_inputs/ev3_input_uart.h"
-#include "ev3_command.h"
+#include "include/ev3_command.h"
 #include "ev3_color.h"
 #include "utility.h"
 

@@ -1,6 +1,6 @@
 #include "ev3_inputs/ev3_input_iic.h"
 #include "ev3_sensors/ev3_sensors.h"
-#include "ev3_command.h"
+#include "include/ev3_command.h"
 #include "ht_ir_v2.h"
 
 #define HT_IR_V2_SENSOR_IIC_ADDRESS 0x08

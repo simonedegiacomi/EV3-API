@@ -17,7 +17,7 @@
  * All Rights Reserved.
  */
 
-#include "ev3_command.h"
+#include "include/ev3_command.h"
 #include <time.h>
 
 static void ms2ts(struct timespec *ts, unsigned long ms)

@@ -62,7 +62,7 @@ extern "C" {
 #include <errno.h>
 #include <libgen.h>
 
-#include "ev3_constants.h"
+#include "include/ev3_constants.h"
 
 #define LCD_BYTE_WIDTH ((LCD_WIDTH + 7) / 8)
 #define LCD_BUFFER_SIZE (LCD_BYTE_WIDTH * LCD_HEIGHT)

@@ -1,7 +1,7 @@
 #include "ev3_inputs/ev3_input_uart.h"
 #include "ev3_sensors/ev3_sensors.h"
 #include "contrib/lms2012/ev3_basictypes.h"
-#include "ev3_command.h"
+#include "include/ev3_command.h"
 #include "ev3_gyro.h"
 #include "utility.h"
 

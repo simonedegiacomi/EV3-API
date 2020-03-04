@@ -18,7 +18,7 @@
  *
  */
 
-#include "ev3_output.h"
+#include "include/ev3_output.h"
 
 static int __RAMP_UP_PCT = 10;
 static int __RAMP_UP_DEGREES = 0;

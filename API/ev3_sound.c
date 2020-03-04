@@ -18,7 +18,7 @@
  *
  */
 
-#include "ev3_sound.h"
+#include "include/ev3_sound.h"
 
 #define STEP_SIZE_TABLE_ENTRIES 89
 #define INDEX_TABLE_ENTRIES     16

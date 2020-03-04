@@ -1,5 +1,5 @@
 #include <stddef.h>
-#include "ev3_sensors/ev3_sensors.h"
+#include "ev3_sensors.h"
 #include "c4ev3_compatibility.h"
 
 static int sensorModeNames[NUM_INPUTS] = {NO_SEN};

@@ -15,7 +15,7 @@
 #include "contrib/bluetooth/hci_lib.h"
 #include "contrib/bluetooth/rfcomm.h"
 
-#include "ev3_bluetooth.h"
+#include "include/ev3_bluetooth.h"
 
 /**
  * Channel 1 is already taken by the UI process of the robot, so we use 2.

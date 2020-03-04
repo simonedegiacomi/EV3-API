@@ -18,7 +18,7 @@
  *
  */
 
-#include "ev3_timer.h"
+#include "include/ev3_timer.h"
 
 #ifndef DISABLE_TIMERS
 

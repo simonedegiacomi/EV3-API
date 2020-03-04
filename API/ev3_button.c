@@ -24,8 +24,8 @@
  * \note Correction of function name [void ButtonWaitForPressAndRelease(byte Button)]
  */
 
-#include "ev3_button.h"
-#include "ev3_timer.h"
+#include "include/ev3_button.h"
+#include "include/ev3_timer.h"
 
 #define BUTTON_DEBOUNCE_TIME 10
 #define BUTTON_POLL_TIME     50

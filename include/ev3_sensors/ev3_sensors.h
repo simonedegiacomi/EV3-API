@@ -7,7 +7,7 @@
 #define EV3_API_EV3_SENSORS_H
 
 #include <stdbool.h>
-#include "ev3_constants.h"
+#include "include/ev3_constants.h"
 
 #define NONE_MODE -1
 

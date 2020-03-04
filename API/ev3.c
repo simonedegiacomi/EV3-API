@@ -19,7 +19,8 @@
  */
 
 #include "ev3_inputs/ev3_input.h"
-#include "ev3.h"
+#include "ev3_sensors/ev3_sensors.h"
+#include "include/ev3.h"
 
 static bool initialized;
 int __attribute__((constructor(EV3_CONSTRUCTOR_PRIORITY))) InitEV3 (void)

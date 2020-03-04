@@ -8,8 +8,8 @@
 #include <stdbool.h>
 #include <string.h>
 #include "contrib/lms2012/ev3_iic.h"
-#include "ev3_constants.h"
-#include "ev3_command.h"
+#include "include/ev3_constants.h"
+#include "include/ev3_command.h"
 #include "ev3_input_iic.h"
 #include "ev3_input.h"
 
