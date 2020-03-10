@@ -17,6 +17,12 @@ bool initEV3UARTInput(ANALOG * analogSensors);
 bool setUARTSensorMode(int port, DATA8 sensorType, DATA8 sensorMode);
 
 /**
+ * Disable UART on this port.
+ * @param port On which port to disable the UART.
+ */
+void disableUART(int port);
+
+/**
  * Read data form UART sensor
  * @param port port to which the sensor is connected
  * @param buffer buffer to which bytes will be written. The size of this buffer
@@ -26,12 +32,22 @@ bool setUARTSensorMode(int port, DATA8 sensorType, DATA8 sensorMode);
  */
 int readFromUART(int port, DATA8 * buffer, int length);
 
+/**
+ * Write a direct message to the UART device.
+ * @param port   Port to write the message to.
+ * @param buffer Message to write.
+ * @param length Message length (max UART_DATA_LENGTH).
+ */
+bool writeToUART(int port, DATA8 * buffer, int length);
+
 void exitEV3UARTInput(void);
 
-/* Utility functions */
-int getUARTStatus(int port);
-int waitNonZeroUARTStatusAndGet(int port);
-void clearUARTChanged (int port);
-
+/**
+ * Wait until the device connected to this port is up and ready.
+ * @param port Port that the device is plugged to.
+ * @param portChanged Whether the kernel has signalled a UART_PORT_CHANGED
+ *                    flag, therefore necessitating port reconfiuration.
+ */
+void waitUartReady(int port, bool *portChanged);
 
 #endif //EV3_API_EV3_INPUT_UART_H
