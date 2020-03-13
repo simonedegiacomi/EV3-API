@@ -1,9 +1,28 @@
 #include "ev3_sensors.h"
-#include "c4ev3_compatibility.h"
+#include "include/ev3_sensors/c4ev3_compatibility.h"
+
+//
+// PRIVATE DECLARATIONS
+//
+
+static bool initializeAllSensors(void);
+
+static void initializeBackCompatibilityIfNeeded(void);
+
+static int readEV3IrSensorSeekForBackCompatibility(int port);
+
+//
+// GLOBAL DATA
+//
 
 static int sensorModeNames[NUM_INPUTS] = {NO_SEN};
 static int ev3IrSensorChannel[NUM_INPUTS] = {0};
 static SensorHandler * sensorModeHandlersByModeName[100];
+
+//
+// IMPLEMENTATION
+//
+
 
 int SetAllSensorMode(int name_1, int name_2, int name_3, int name_4) {
     sensorModeNames[IN_1] = name_1;
